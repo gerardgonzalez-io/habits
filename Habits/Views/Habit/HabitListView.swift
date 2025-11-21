@@ -24,7 +24,7 @@ struct HabitListView: View
                 { habit in
                     NavigationLink(habit.name)
                     {
-                        //TopicDetailView(topic: topic)
+                        HabitDetailView(habit: habit)
                     }
                 }
                 .onDelete(perform: deteleHabit(indexes:))

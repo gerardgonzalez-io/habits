@@ -20,6 +20,9 @@
 		FDB3A3EE2ECE7A990051EE8F /* WelcomePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB3A3ED2ECE7A990051EE8F /* WelcomePage.swift */; };
 		FDB3A3F02ECE7AC10051EE8F /* FeaturePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB3A3EF2ECE7AC10051EE8F /* FeaturePage.swift */; };
 		FDB3A3F22ECE7AD90051EE8F /* FeatureCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB3A3F12ECE7AD90051EE8F /* FeatureCard.swift */; };
+		FDB3A4902ED0F1380051EE8F /* HabitDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB3A48F2ED0F1380051EE8F /* HabitDetailView.swift */; };
+		FDB3A4922ED0F4C80051EE8F /* StreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB3A4912ED0F4C80051EE8F /* StreakView.swift */; };
+		FDB3A4942ED0F4D80051EE8F /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB3A4932ED0F4D80051EE8F /* CalendarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +40,9 @@
 		FDB3A3ED2ECE7A990051EE8F /* WelcomePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomePage.swift; sourceTree = "<group>"; };
 		FDB3A3EF2ECE7AC10051EE8F /* FeaturePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturePage.swift; sourceTree = "<group>"; };
 		FDB3A3F12ECE7AD90051EE8F /* FeatureCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureCard.swift; sourceTree = "<group>"; };
+		FDB3A48F2ED0F1380051EE8F /* HabitDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailView.swift; sourceTree = "<group>"; };
+		FDB3A4912ED0F4C80051EE8F /* StreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakView.swift; sourceTree = "<group>"; };
+		FDB3A4932ED0F4D80051EE8F /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				FDB3A3E42ECE6A880051EE8F /* HabitListView.swift */,
+				FDB3A48F2ED0F1380051EE8F /* HabitDetailView.swift */,
 				FDB3A3E62ECE6CF00051EE8F /* NewHabitView.swift */,
 			);
 			path = Habit;
@@ -112,6 +119,7 @@
 		FDB3A3E22ECE6A4C0051EE8F /* Streak */ = {
 			isa = PBXGroup;
 			children = (
+				FDB3A4912ED0F4C80051EE8F /* StreakView.swift */,
 			);
 			path = Streak;
 			sourceTree = "<group>";
@@ -119,6 +127,7 @@
 		FDB3A3E32ECE6A540051EE8F /* Calendar */ = {
 			isa = PBXGroup;
 			children = (
+				FDB3A4932ED0F4D80051EE8F /* CalendarView.swift */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -211,10 +220,13 @@
 				FDB3A3DC2ECE55110051EE8F /* Habit.swift in Sources */,
 				FDB3A3EC2ECE79F00051EE8F /* OnboardingView.swift in Sources */,
 				FDB3A3E72ECE6CF00051EE8F /* NewHabitView.swift in Sources */,
+				FDB3A4942ED0F4D80051EE8F /* CalendarView.swift in Sources */,
 				FDB3A3F02ECE7AC10051EE8F /* FeaturePage.swift in Sources */,
 				FDB3A3EE2ECE7A990051EE8F /* WelcomePage.swift in Sources */,
+				FDB3A4902ED0F1380051EE8F /* HabitDetailView.swift in Sources */,
 				FDB3A3D72ECE42090051EE8F /* HabitsApp.swift in Sources */,
 				FDB3A3D82ECE42090051EE8F /* ContentView.swift in Sources */,
+				FDB3A4922ED0F4C80051EE8F /* StreakView.swift in Sources */,
 				FDB3A3E02ECE578D0051EE8F /* HabitStreak.swift in Sources */,
 				FDB3A3F22ECE7AD90051EE8F /* FeatureCard.swift in Sources */,
 				FDB3A3DE2ECE55BD0051EE8F /* HabitRecord.swift in Sources */,
