@@ -16,7 +16,7 @@ struct HabitListView: View
     
     var body: some View
     {
-        NavigationSplitView
+        NavigationStack
         {
             List
             {
@@ -27,7 +27,7 @@ struct HabitListView: View
                         HabitDetailView(habit: habit)
                     }
                 }
-                .onDelete(perform: deteleHabit(indexes:))
+                .onDelete(perform: deleteHabit)
             }
             .navigationTitle("Your habits")
             .toolbar
@@ -50,12 +50,6 @@ struct HabitListView: View
                 .interactiveDismissDisabled()
             }
         }
-        detail:
-        {
-            Text("Select a habit")
-                .navigationTitle("Habit")
-                .navigationBarTitleDisplayMode(.inline)
-        }
     }
     
     private func addHabit()
@@ -65,7 +59,7 @@ struct HabitListView: View
         self.newHabit = newHabit
     }
 
-    private func deteleHabit(indexes: IndexSet)
+    private func deleteHabit(_ indexes: IndexSet)
     {
         for index in indexes
         {

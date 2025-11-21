@@ -6,11 +6,16 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HabitDetailView: View
 {
     let habit: Habit
-    @State private var isMarkedToday = false   // Solo para UI por ahora
+
+    @Environment(\.modelContext) private var context
+
+    @State private var isMarkedToday = false
+    @State private var todayRecord: HabitRecord?
 
     var body: some View
     {
@@ -24,13 +29,7 @@ struct HabitDetailView: View
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
 
-                    Button(action:
-                    {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7))
-                        {
-                            isMarkedToday.toggle()
-                        }
-                    })
+                    Button(action: toggleTodayMark)
                     {
                         HStack(spacing: 12)
                         {
@@ -85,7 +84,7 @@ struct HabitDetailView: View
             {
                 NavigationLink
                 {
-                    StreakView()
+                    StreakView(habit: habit)
                 }
                 label:
                 {
@@ -95,7 +94,7 @@ struct HabitDetailView: View
 
                 NavigationLink
                 {
-                    CalendarView()
+                    CalendarView(habit: habit)
                 }
                 label:
                 {
@@ -106,6 +105,104 @@ struct HabitDetailView: View
         }
         .navigationTitle(habit.name)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear(perform: loadTodayState)
+    }
+}
+
+extension HabitDetailView
+{
+    private func startOfToday() -> Date
+    {
+        var calendar = Calendar.current
+        calendar.timeZone = .current
+        return calendar.startOfDay(for: Date())
+    }
+
+    private func loadTodayState()
+    {
+        let today = startOfToday()
+        let habitID = habit.id
+
+        let predicate = #Predicate<HabitRecord>
+        { record in
+            record.habit?.id == habitID && record.date == today
+        }
+
+        let descriptor = FetchDescriptor<HabitRecord>(
+            predicate: predicate
+        )
+
+        do
+        {
+            if let record = try context.fetch(descriptor).first
+            {
+                todayRecord = record
+                isMarkedToday = (record.status == .success)
+            }
+            else
+            {
+                todayRecord = nil
+                isMarkedToday = false
+            }
+        }
+        catch
+        {
+            todayRecord = nil
+            isMarkedToday = false
+        }
+    }
+
+    private func toggleTodayMark()
+    {
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.7))
+        {
+            if isMarkedToday
+            {
+                unmarkToday()
+            }
+            else
+            {
+                markToday()
+            }
+        }
+    }
+
+    private func markToday()
+    {
+        let today = startOfToday()
+
+        if let existing = todayRecord
+        {
+            existing.date = today
+            existing.status = .success
+        }
+        else
+        {
+            let record = HabitRecord(
+                habit: habit,
+                date: today,
+                status: .success
+            )
+            context.insert(record)
+            todayRecord = record
+        }
+
+        isMarkedToday = true
+
+        do { try context.save() } catch { /* opcional: log error */ }
+    }
+
+    private func unmarkToday()
+    {
+        if let record = todayRecord
+        {
+            context.delete(record)
+            todayRecord = nil
+        }
+
+        isMarkedToday = false
+
+        do { try context.save() } catch { /* opcional: log error */ }
     }
 }
 
@@ -120,5 +217,6 @@ struct HabitDetailView: View
     NavigationStack
     {
         HabitDetailView(habit: sampleHabit)
+            .modelContainer(HabitsSampleData.shared.modelContainer)
     }
 }
