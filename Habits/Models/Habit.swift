@@ -28,9 +28,20 @@ class Habit
 
 extension Habit
 {
-    static let sampleData: [Habit] = [
-        Habit(name: "Go Gym"),
-        Habit(name: "No sugar"),
-        Habit(name: "Study")
-    ]
+    static let sampleData: [Habit] =
+    {
+        let now = Date()
+        var calendar = Calendar.current
+        calendar.timeZone = .current
+
+        func daysAgo(_ n: Int) -> Date {
+            calendar.date(byAdding: .day, value: -n, to: now)!
+        }
+
+        return [
+            Habit(name: "Go Gym",   createdAt: daysAgo(10)),
+            Habit(name: "No sugar", createdAt: daysAgo(7)),
+            Habit(name: "Study",    createdAt: daysAgo(3))
+        ]
+    }()
 }
