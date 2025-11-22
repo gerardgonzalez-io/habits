@@ -49,7 +49,11 @@ struct CalendarView: View
     }
 }
 
-// MARK: - UI Sections
+fileprivate struct DaySlot: Hashable
+{
+    let date: Date?
+    let day: Int?
+}
 
 private extension CalendarView
 {
@@ -119,18 +123,18 @@ private extension CalendarView
 
             LazyVGrid(columns: columns, spacing: 10)
             {
-                // Empty slots before the first day
-                ForEach(0..<leadingEmptyDays, id: \.self) { _ in
-                    Color.clear
-                        .frame(height: 36)
-                }
-
-                // Days of the month
-                ForEach(1...daysInMonth, id: \.self) { day in
-                    let date = dateForDay(day)
-                    let status = dayVisualStatus(for: date)
-
-                    dayCell(day: day, status: status)
+                ForEach(makeDays(), id: \.self)
+                { slot in
+                    if let date = slot.date, let day = slot.day
+                    {
+                        let status = dayVisualStatus(for: date)
+                        dayCell(day: day, status: status)
+                    }
+                    else
+                    {
+                        Color.clear
+                            .frame(height: 36)
+                    }
                 }
             }
 
@@ -271,16 +275,6 @@ private extension CalendarView
         return calendar.date(byAdding: .month, value: monthOffset, to: baseMonthStart)!
     }
 
-    var daysInMonth: Int
-    {
-        calendar.range(of: .day, in: .month, for: startOfMonth)!.count
-    }
-
-    func dateForDay(_ day: Int) -> Date
-    {
-        calendar.date(byAdding: .day, value: day - 1, to: startOfMonth)!
-    }
-
     var monthTitle: String
     {
         let formatter = DateFormatter()
@@ -297,13 +291,6 @@ private extension CalendarView
         let firstWeekdayIndex = calendar.firstWeekday - 1    // 0-based
 
         return (0..<7).map { symbols[($0 + firstWeekdayIndex) % 7] }
-    }
-
-    var leadingEmptyDays: Int
-    {
-        let weekdayOfFirst = calendar.component(.weekday, from: startOfMonth) // 1...7
-        let offset = (weekdayOfFirst - calendar.firstWeekday + 7) % 7
-        return offset
     }
 
     // Mapa de fecha -> status
@@ -337,6 +324,49 @@ private extension CalendarView
             // Día que ya pasó desde que existe el hábito, sin éxito → missed
             return .missed
         }
+    }
+    
+    func makeDays() -> [DaySlot] {
+        // Usamos startOfMonth como referencia (ya respeta monthOffset)
+        let monthDate = startOfMonth
+
+        // Rango de días del mes (1...30, 1...31, etc.)
+        let range = calendar.range(of: .day, in: .month, for: monthDate) ?? 1..<31
+
+        // Primer día real del mes (ej: 1 de junio de 2025)
+        let firstOfMonth = calendar.date(
+            from: calendar.dateComponents([.year, .month], from: monthDate)
+        ) ?? monthDate
+
+        // Día de la semana de ese primer día (1...7)
+        let firstWeekdayIndex = calendar.component(.weekday, from: firstOfMonth)
+
+        // Cuántos huecos van antes según el firstWeekday del calendario del usuario
+        let leadingEmpty = (firstWeekdayIndex - calendar.firstWeekday + 7) % 7
+
+        var result: [DaySlot] = []
+
+        // Slots vacíos antes del día 1
+        result.append(
+            contentsOf: Array(
+                repeating: DaySlot(date: nil, day: nil),
+                count: leadingEmpty
+            )
+        )
+
+        // Slots del mes (día + fecha real)
+        for day in range {
+            if let date = calendar.date(bySetting: .day, value: day, of: firstOfMonth) {
+                result.append(DaySlot(date: date, day: day))
+            }
+        }
+
+        // Rellenar hasta múltiplo de 7 para completar la última fila
+        while result.count % 7 != 0 {
+            result.append(DaySlot(date: nil, day: nil))
+        }
+
+        return result
     }
 }
 
