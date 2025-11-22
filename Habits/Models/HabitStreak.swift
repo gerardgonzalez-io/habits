@@ -21,14 +21,12 @@ extension HabitStreak
         var calendar = Calendar.current
         calendar.timeZone = .current
         
-        // Nos quedamos con los días cumplidos (✅) para este hábito, normalizados a "inicio de día"
         let successDatesSet: Set<Date> = Set(
             records
                 .filter { $0.habit?.id == habitId && $0.status == .success }
                 .map { calendar.startOfDay(for: $0.date) }
         )
         
-        // Si no hay días cumplidos, ambas rachas son 0
         guard !successDatesSet.isEmpty else
         {
             return HabitStreak(habitId: habitId, currentStreak: 0, bestStreak: 0)
@@ -50,12 +48,10 @@ extension HabitStreak
                 if let diff = calendar.dateComponents([.day], from: previous, to: current).day,
                    diff == 1
                 {
-                    // Día consecutivo
                     currentRun += 1
                 }
                 else
                 {
-                    // Se rompió la racha, actualizamos best y reseteamos
                     bestStreak = max(bestStreak, currentRun)
                     currentRun = 1
                 }

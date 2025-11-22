@@ -20,14 +20,13 @@ struct CalendarView: View
         self.habit = habit
 
         let habitID = habit.id
-        let predicate = #Predicate<HabitRecord> { record in
+        let predicate = #Predicate<HabitRecord>
+        { record in
             record.habit?.id == habitID
         }
 
         _records = Query(filter: predicate)
     }
-
-    // MARK: - Body
 
     var body: some View
     {
@@ -63,8 +62,10 @@ private extension CalendarView
         {
             Button
             {
-                monthOffset -= 1    // mes anterior
-            } label: {
+                monthOffset -= 1
+            }
+            label:
+            {
                 Image(systemName: "chevron.left")
                     .font(.subheadline.weight(.semibold))
                     .padding(8)
@@ -87,14 +88,15 @@ private extension CalendarView
 
             Button
             {
-                // Solo permitimos ir hasta el mes actual (offset 0)
                 guard monthOffset < 0 else { return }
-                monthOffset += 1    // acercarnos al mes actual
-            } label: {
+                monthOffset += 1
+            }
+            label:
+            {
                 Image(systemName: "chevron.right")
                     .font(.subheadline.weight(.semibold))
                     .padding(8)
-                    .opacity(monthOffset < 0 ? 1 : 0.3)   // se “apaga” en el mes actual
+                    .opacity(monthOffset < 0 ? 1 : 0.3)
                     .contentShape(Rectangle())
             }
         }
@@ -106,7 +108,6 @@ private extension CalendarView
 
         return VStack(spacing: 12)
         {
-            // Weekday header
             HStack
             {
                 ForEach(weekdaySymbols, id: \.self) { symbol in
@@ -142,11 +143,9 @@ private extension CalendarView
                     let translation = value.translation.width
 
                     if translation > 40 {
-                        // swipe right → mes anterior
                         monthOffset -= 1
                     }
                     else if translation < -40 {
-                        // swipe left → siguiente mes (hasta el actual)
                         guard monthOffset < 0 else { return }
                         monthOffset += 1
                     }
@@ -158,7 +157,7 @@ private extension CalendarView
     {
         let (bg, border, text, iconName, iconColor) = colorsAndIcon(for: status)
 
-        return ZStack   // 👈 centramos todo por defecto
+        return ZStack
         {
             Circle()
                 .fill(bg)
@@ -174,10 +173,11 @@ private extension CalendarView
 
             if let iconName
             {
-                // Icono pegado abajo a la derecha
-                VStack {
+                VStack
+                {
                     Spacer()
-                    HStack {
+                    HStack
+                    {
                         Spacer()
                         Image(systemName: iconName)
                             .font(.caption2.weight(.bold))
@@ -231,8 +231,6 @@ private extension CalendarView
     }
 }
 
-// MARK: - Date & Status Helpers
-
 private extension CalendarView
 {
     enum DayVisualStatus
@@ -272,20 +270,18 @@ private extension CalendarView
         let formatter = DateFormatter()
         formatter.calendar = calendar
         formatter.locale = .current
-        formatter.dateFormat = "LLLL yyyy" // e.g. "November 2025"
+        formatter.dateFormat = "LLLL yyyy"
         return formatter.string(from: startOfMonth)
     }
 
     var weekdaySymbols: [String]
     {
-        // Localized weekday symbols starting from user's firstWeekday
-        let symbols = calendar.shortStandaloneWeekdaySymbols // usually Sun...Sat
-        let firstWeekdayIndex = calendar.firstWeekday - 1    // 0-based
+        let symbols = calendar.shortStandaloneWeekdaySymbols
+        let firstWeekdayIndex = calendar.firstWeekday - 1
 
         return (0..<7).map { symbols[($0 + firstWeekdayIndex) % 7] }
     }
 
-    // Mapa de fecha -> status
     var statusByDay: [Date: HabitStatus]
     {
         var dict: [Date: HabitStatus] = [:]
@@ -301,7 +297,6 @@ private extension CalendarView
     {
         let dayStart = calendar.startOfDay(for: date)
 
-        // Futuro o antes de que existiera el hábito → apagado
         if dayStart > todayStart || dayStart < habitStart
         {
             return .notStarted
@@ -313,32 +308,23 @@ private extension CalendarView
         }
         else
         {
-            // Día que ya pasó desde que existe el hábito, sin éxito → missed
             return .missed
         }
     }
     
-    func makeDays() -> [DaySlot] {
-        // Usamos startOfMonth como referencia (ya respeta monthOffset)
+    func makeDays() -> [DaySlot]
+    {
         let monthDate = startOfMonth
-
-        // Rango de días del mes (1...30, 1...31, etc.)
         let range = calendar.range(of: .day, in: .month, for: monthDate) ?? 1..<31
-
-        // Primer día real del mes (ej: 1 de junio de 2025)
+        
         let firstOfMonth = calendar.date(
             from: calendar.dateComponents([.year, .month], from: monthDate)
         ) ?? monthDate
 
-        // Día de la semana de ese primer día (1...7)
         let firstWeekdayIndex = calendar.component(.weekday, from: firstOfMonth)
-
-        // Cuántos huecos van antes según el firstWeekday del calendario del usuario
         let leadingEmpty = (firstWeekdayIndex - calendar.firstWeekday + 7) % 7
-
         var result: [DaySlot] = []
 
-        // Slots vacíos antes del día 1
         result.append(
             contentsOf: Array(
                 repeating: DaySlot(date: nil, day: nil),
@@ -346,15 +332,16 @@ private extension CalendarView
             )
         )
 
-        // Slots del mes (día + fecha real)
-        for day in range {
-            if let date = calendar.date(bySetting: .day, value: day, of: firstOfMonth) {
+        for day in range
+        {
+            if let date = calendar.date(bySetting: .day, value: day, of: firstOfMonth)
+            {
                 result.append(DaySlot(date: date, day: day))
             }
         }
 
-        // Rellenar hasta múltiplo de 7 para completar la última fila
-        while result.count % 7 != 0 {
+        while result.count % 7 != 0
+        {
             result.append(DaySlot(date: nil, day: nil))
         }
 

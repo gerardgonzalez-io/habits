@@ -37,7 +37,6 @@ struct StreakView: View
         {
             VStack(spacing: 24)
             {
-                // Header
                 VStack(spacing: 8)
                 {
                     Text(habit.name)
@@ -160,7 +159,6 @@ struct StreakView: View
 
 #Preview
 {
-    // Usamos sample data del container
     let container = HabitsSampleData.shared.modelContainer
 
     let habit = Habit.sampleData.first ?? Habit(name: "Go Gym")

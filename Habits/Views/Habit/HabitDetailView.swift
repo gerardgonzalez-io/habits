@@ -61,8 +61,8 @@ struct HabitDetailView: View
                                     LinearGradient(
                                         colors: isMarkedToday
                                         ? [
-                                            Color(red: 0.06, green: 0.42, blue: 0.33), // aprox #0A3A2A
-                                            Color(red: 0.09, green: 0.63, blue: 0.52)  // aprox #16A085
+                                            Color(red: 0.06, green: 0.42, blue: 0.33),
+                                            Color(red: 0.09, green: 0.63, blue: 0.52)
                                         ]
                                         : [
                                             Color.primary.opacity(0.12),

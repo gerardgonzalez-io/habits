@@ -10,9 +10,9 @@ import SwiftData
 
 enum HabitStatus: String, Codable
 {
-    case success   // ✅ Done
-    case failure   // ❌ Fail
-    case none      // 🔲 Not completed yet
+    case success
+    case failure
+    case none 
 }
 
 @Model
@@ -60,7 +60,6 @@ extension HabitRecord
 
         var records: [HabitRecord] = []
 
-        // Habit 0: "Go Gym" - racha actual de 3 días y una racha pasada más larga
         let gym = habits[0]
         records += [
             record(gym, 7, .success),
