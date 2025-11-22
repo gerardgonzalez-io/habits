@@ -63,9 +63,7 @@ private extension CalendarView
         {
             Button
             {
-                withAnimation(.spring) {
-                    monthOffset -= 1    // mes anterior
-                }
+                monthOffset -= 1    // mes anterior
             } label: {
                 Image(systemName: "chevron.left")
                     .font(.subheadline.weight(.semibold))
@@ -91,9 +89,7 @@ private extension CalendarView
             {
                 // Solo permitimos ir hasta el mes actual (offset 0)
                 guard monthOffset < 0 else { return }
-                withAnimation(.spring) {
-                    monthOffset += 1    // acercarnos al mes actual
-                }
+                monthOffset += 1    // acercarnos al mes actual
             } label: {
                 Image(systemName: "chevron.right")
                     .font(.subheadline.weight(.semibold))
@@ -147,16 +143,12 @@ private extension CalendarView
 
                     if translation > 40 {
                         // swipe right → mes anterior
-                        withAnimation(.spring) {
-                            monthOffset -= 1
-                        }
+                        monthOffset -= 1
                     }
                     else if translation < -40 {
                         // swipe left → siguiente mes (hasta el actual)
                         guard monthOffset < 0 else { return }
-                        withAnimation(.spring) {
-                            monthOffset += 1
-                        }
+                        monthOffset += 1
                     }
                 }
         )
